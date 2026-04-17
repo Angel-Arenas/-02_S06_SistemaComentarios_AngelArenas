@@ -1,0 +1,98 @@
+<div class="contenedor">
+  <header class="encabezado">
+    <h1>Comentarios</h1>
+    <p>Aplicacion Angular con consumo de API REST</p>
+  </header>
+
+  <div class="contador">
+    <div class="stat">
+      <span class="numero">{{ obtenerTotalComentarios() }}</span>
+      <span class="etiqueta">Total Comentarios</span>
+    </div>
+    <div class="stat">
+      <span class="numero">{{ contadorComentariosCreados }}</span>
+      <span class="etiqueta">Creados</span>
+    </div>
+  </div>
+
+  <div class="formulario-seccion">
+    <h2>Nuevo Comentario</h2>
+    
+    <form (ngSubmit)="enviarComentario()" #formulario="ngForm">
+      <div class="grupo-formulario">
+        <label for="nombre">Nombre</label>
+        <input 
+          type="text" 
+          id="nombre"
+          placeholder="Ingresa tu nombre"
+          [(ngModel)]="nuevoComentario.name"
+          name="nombre"
+          required
+          class="input"
+        >
+      </div>
+
+      <div class="grupo-formulario">
+        <label for="comentario">Comentario</label>
+        <textarea 
+          id="comentario"
+          placeholder="Escribe tu comentario aqui..."
+          [(ngModel)]="nuevoComentario.body"
+          name="comentario"
+          required
+          rows="5"
+          class="textarea"
+        ></textarea>
+      </div>
+
+      <div class="botones">
+        <button type="submit" class="btn btn-enviar">Enviar</button>
+        <button type="button" (click)="limpiarFormulario()" class="btn btn-limpiar">Limpiar</button>
+      </div>
+    </form>
+
+    <div *ngIf="mostrarMensajeExito" class="alerta alerta-exito">
+      {{ mensajeExito }}
+    </div>
+  </div>
+
+  <div class="listado-seccion">
+    <h2>Lista de Comentarios</h2>
+
+    <div *ngIf="cargando" class="mensaje-carga">
+      <p>Cargando comentarios...</p>
+    </div>
+
+    <div *ngIf="error && !cargando" class="alerta alerta-error">
+      {{ error }}
+      <button (click)="cargarComentarios()" class="btn btn-reintentar">Reintentar</button>
+    </div>
+
+    <div *ngIf="!cargando && !error && comentarios.length > 0" class="lista-comentarios">
+      <div *ngFor="let comentario of comentarios; let i = index" class="tarjeta-comentario" [class.nuevo]="comentario.fecha">
+        
+        <div class="encabezado-comentario">
+          <h3>{{ comentario.name }}</h3>
+          <span *ngIf="comentario.fecha" class="fecha">{{ comentario.fecha }}</span>
+          <span *ngIf="!comentario.fecha" class="numero-id">#{{ comentario.id }}</span>
+        </div>
+
+        <p class="contenido-comentario">{{ comentario.body }}</p>
+
+        <div class="metadata">
+          <span *ngIf="comentario.email" class="email">{{ comentario.email }}</span>
+          <span *ngIf="comentario.postId" class="post-id">Post #{{ comentario.postId }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!cargando && !error && comentarios.length === 0" class="mensaje-vacio">
+      <p>No hay comentarios disponibles</p>
+    </div>
+  </div>
+
+  <div class="acciones-finales">
+    <button (click)="cargarComentarios()" class="btn btn-recargar">Recargar</button>
+    <button (click)="resetearComentarios()" class="btn btn-resetear">Resetear</button>
+  </div>
+</div>
